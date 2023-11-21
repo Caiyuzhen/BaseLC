@@ -26,7 +26,7 @@ def run_llm(user_input):
 	#  prompt.format(对象="科技公司") # "帮我给科技公司起一个很酷的名称" => 只是一个模板的例子, 实际还是 👇 的输入
 
 	chain = LLMChain(llm=llm, prompt=prompt)
-	res = chain.run("小孩")
+	res = chain.run(user_input) # 🌟放入用户输入的问题
 	return res
 
 
