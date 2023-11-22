@@ -17,3 +17,7 @@ pip3 install -r requirements.txt
 
 ## Notices
 - Python 解释器最好是 3.12 版本+
+
+
+## Git 冲突
+- git pull --no-rebase origin main
