@@ -3,9 +3,14 @@
 		WHY?
 			连接多个 llm 模块
    		
+    提示词
      	如何避免重复定义功能相似的 llm 模块？
-			提示模板
-				prompt template
+			提示模板 {}
+					prompt template
+     
+		提供简单的示例
+
+		给出限制
 """
 from langchain.llms import OpenAI
 from langchain.prompts import PromptTemplate
