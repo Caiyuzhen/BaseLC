@@ -4,3 +4,5 @@ numexpr
 pypdf
 tiktoken
 chromadb
+fastapi
+python-dotenv
