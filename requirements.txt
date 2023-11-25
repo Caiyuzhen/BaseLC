@@ -6,3 +6,4 @@ tiktoken
 chromadb
 fastapi
 python-dotenv
+python-multipart
