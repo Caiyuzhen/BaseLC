@@ -15,6 +15,8 @@ pip3 install -r requirements.txt
 - pip3 install python-multipart
   - fastApi 处理文件上传的必要依赖
 - pip3 install unstructured
+- pip3 install gradio
+  - 前端框架
 
 
 ## Set API token
@@ -38,3 +40,7 @@ pip3 install -r requirements.txt
 
 # 🌟 OpeanAI调用失败的情况
 - VPN 开启全局模式
+
+
+# 运行 Gradio 交互框架
+- python3 interface.py

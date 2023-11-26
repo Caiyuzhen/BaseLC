@@ -8,17 +8,22 @@ from langchain.chat_models import ChatOpenAI # 对话模型
 from langchain.schema import HumanMessage # 人类信息（⚠️使用聊天模型时候需要引入！）
 from langchain.output_parsers import PydanticOutputParser # 输出解析器
 from pydantic import BaseModel, Field # 🌟从输出解析器中引入 BaseModel 和 Field 类
+from typing import Union
 
 
-URL = "https://news.sina.com.cn/c/2023-08-02/doc-imzetmzi8136053.shtml"
+load_dotenv() # 加载环境变量
 
 
-class talkShow_line(BaseModel):
+
+class TalkShow_line(BaseModel):
     character: str = Field(description="说这句台词的角色名称")
     content: str = Field(description="台词的具体内容, 其中不再包含角色名字")
     
-class talkShow(BaseModel):
-    script: list[talkShow_line] = Field(description="脱口秀台词的剧本")
+class TalkShow(BaseModel):
+    script: list[TalkShow_line] = Field(description="脱口秀台词的剧本")
+    
+    
+
     
 
 # 🌟 【一】提取新闻内容 —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
@@ -43,7 +48,7 @@ def urlToNews(URL) -> str:
 # 🌟 【二】进行总结 => 利用 langchain 的总结链 —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 	# stuff 的总结链模式（把所有文档合并起来作为上下文, 然后结合提示词发给 llm） ❌不推荐
 	# map reduce 模式 (把每个文档分别都发给 llm 然后分别得到总结, 最后合并总结成为总结的上下文再结合提示词发给 llm) ✅推荐
-def content_summary(llm) -> str:
+def content_summary(llm, URL) -> str:
 	# 👇根据源码改写的总结新闻的 prompt
     prompt_template = """总结这段新闻的内容:
 		"{text}"
@@ -62,7 +67,7 @@ def content_summary(llm) -> str:
 
 
 # 🌟 【三】把拿到的 summary 转为脱口秀 —————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-def tranTo_talkshow(summary):
+def tranTo_talkshow(summary) -> TalkShow | str: # -> Union[TalkShow, str] 联合类型, 表明可能返回 TalkShow 对象或一个字符串
     openAI_chat = ChatOpenAI(model_name="gpt-3.5-turbo") # 选择 AI 的对话模型
     
     # 👇提示词模板, {要求} 为脱口秀的风格, {output_instructions} 为告诉大模型要以什么样的结果进行输出(返回序列化的文本), 以满足下方【文本解析器】的要求(下方的解析器再把文本进行序列化)
@@ -73,7 +78,7 @@ def tranTo_talkshow(summary):
 		要求: "{要求}"
 		{output_instructions}
     """
-    parser = PydanticOutputParser(pydantic_object=talkShow)    
+    parser = PydanticOutputParser(pydantic_object=TalkShow)    
      
     # 这个方法的目的是根据提供的示例来创建一个新的 PromptTemplate 实例, 用来定义一个具体的情境或格式，然后该模板可以用来生成特定风格或格式的文本提示
     # prompt_talkShow = PromptTemplate.from_template(template=template) # ⚠️不带【部分参数 output_instructions】 以及 parser 解析器的写法
@@ -98,20 +103,25 @@ def tranTo_talkshow(summary):
     
     # 调用文本解析器, 把 AI 输出的结果进行序列化
     talkShow_content = parser.parse(content_script.content) # 把 AI 输出的结果进行序列化
-    return talkShow_content # 最终返回 script=[talkShow_line(character='李诞', content='大家好，我是李诞！'), talkShow_line(character='郭德纲', content='大家好，我是郭德纲！'), ...] 的序列化结构
+    return talkShow_content # 最终返回 script=[TalkShow_line(character='李诞', content='大家好，我是李诞！'), TalkShow_line(character='郭德纲', content='大家好，我是郭德纲！'), ...] 的序列化结构
 
 
-
-
-
-# 🌟 主函数
-if __name__ == '__main__':
-    llm = OpenAI(max_tokens=1500) # 🌟用大语言来进行总结, 默认的 token 为 256, 可以扩充更多一些
-    
-    summary = content_summary(llm)
+# 🌟入口函数 (供外部调用)
+def convertToTalkshow(URL) -> str:
+    llm = OpenAI(max_tokens=1000) # 🌟用大语言来进行总结, 默认的 token 为 256, 可以扩充更多一些
+    summary = content_summary(llm, URL)
     res = tranTo_talkshow(summary)
-    # res = parseIn_talkShow_content(content_sxript, parser)
-    print(res)
+    # print(res)
+    return res # 最终返回 script=[TalkShow_line(character='李诞', content='大家好，我是李诞！'), TalkShow_line(character='郭德纲', content='大家好，我是郭德纲！'), ...] 的序列化结构
+    
+    
+
+
+# # 🌟 主函数
+# if __name__ == '__main__':
+#     URL = "https://news.sina.com.cn/c/2023-08-02/doc-imzetmzi8136053.shtml"
+#     res = convertToTalkshow(URL)
+#     print(res)
 
     
 	
