@@ -14,6 +14,7 @@ pip3 install -r requirements.txt
   - 用来启动 fastapi 的 ASGI 服务器
 - pip3 install python-multipart
   - fastApi 处理文件上传的必要依赖
+- pip3 install unstructured
 
 
 ## Set API token
@@ -22,7 +23,8 @@ pip3 install -r requirements.txt
 
 
 ## Notices
-- Python 解释器最好是 3.12 版本+
+- 🌟 Python 解释器最好是 3.12 版本+
+  - 通过命令面板（Ctrl+Shift+P）使用“Python: Select Interpreter”命令，选择解释器
 
 
 ## Git 冲突

@@ -7,3 +7,4 @@ chromadb
 fastapi
 python-dotenv
 python-multipart
+unstructured
