@@ -16,12 +16,12 @@ with gr.Blocks() as demo:
             if line is None:
                 return ""
             return f'{line.character}: {line.content}'
-        
+            
         for i in range(0, len(talkSHow.script), 2): # 0 是 range 函数的起始值，表示循环将从列表的第一个元素（索引为 0）开始 | len(talkSHow.script) 是 range 函数的结束值 |  2 是 range 函数的步长(因为脱口秀的剧本返回的是元组 tuple),意味着循环将每次跳过一个元素。例如，如果 talkSHow.script 的长度为 6，那么 i 的值将依次是 0、2、4。这样可以确保在循环中每次处理一对台词（由两个不同的角色说出）
             line1 = talkSHow.script[i]
             line2 = talkSHow.script[i + 1] if (i+1) < len(talkSHow.script) else None # 👈表示循环次数 i < 脱口秀剧本的长度
             chat_history.append((parse_line(line1), parse_line(line2))) # 插入循环出来的【第一句话】跟【第二句话】 => 也就是两个脱口秀演员的对话
-            return chat_history # 返回对话历史
+        return chat_history # 返回对话历史
         
 	# 按钮的点击事件
     submit_btn.click(

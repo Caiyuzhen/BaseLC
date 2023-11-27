@@ -108,7 +108,7 @@ def tranTo_talkshow(summary) -> TalkShow | str: # -> Union[TalkShow, str] 联合
 
 # 🌟入口函数 (供外部调用)
 def convertToTalkshow(URL) -> str:
-    llm = OpenAI(max_tokens=1000) # 🌟用大语言来进行总结, 默认的 token 为 256, 可以扩充更多一些
+    llm = OpenAI(max_tokens=500) # 🌟用大语言来进行总结, 默认的 token 为 256, 可以扩充更多一些
     summary = content_summary(llm, URL)
     res = tranTo_talkshow(summary)
     # print(res)
